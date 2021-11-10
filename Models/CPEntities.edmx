@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CompanyPrintersModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Designations">
+          <Key>
+            <PropertyRef Name="DesignationID" />
+          </Key>
+          <Property Name="DesignationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DesignationName" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="DocID" />
+          </Key>
+          <Property Name="DocID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DocType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DocUrl" Type="varbinary(max)" Nullable="false" />
+          <Property Name="EngenPrintersID" Type="int" />
+        </EntityType>
+        <EntityType Name="Employeemaster">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LoginName" Type="varchar" MaxLength="50" />
+          <Property Name="Password" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="ContactNo" Type="varchar" MaxLength="15" />
+          <Property Name="Address" Type="varchar" MaxLength="50" />
+          <Property Name="IsApporved" Type="int" />
+          <Property Name="Status" Type="int" />
+          <Property Name="TotalCnt" Type="int" />
+        </EntityType>
+        <EntityType Name="PrinterMakeTbl">
+          <Key>
+            <PropertyRef Name="PrinterMakeID" />
+          </Key>
+          <Property Name="PrinterMakeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PrinterMake" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Printers">
+          <Key>
+            <PropertyRef Name="EngenPrintersID" />
+          </Key>
+          <Property Name="EngenPrintersID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PrinterName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="PrinterMakeID" Type="int" Nullable="false" />
+          <Property Name="FolderToMonitor" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="OutputType" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="FileOutput" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="CreateTimestamp" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Address" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="DOB" Type="date" Nullable="false" />
+          <Property Name="DesignationID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Documents__Engen__67DE6983">
+          <End Role="Printers" Type="Self.Printers" Multiplicity="0..1" />
+          <End Role="Documents" Type="Self.Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Printers">
+              <PropertyRef Name="EngenPrintersID" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="EngenPrintersID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Printers__Printe__68D28DBC">
+          <End Role="PrinterMakeTbl" Type="Self.PrinterMakeTbl" Multiplicity="1" />
+          <End Role="Printers" Type="Self.Printers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PrinterMakeTbl">
+              <PropertyRef Name="PrinterMakeID" />
+            </Principal>
+            <Dependent Role="Printers">
+              <PropertyRef Name="PrinterMakeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__Designati__69C6B1F5">
+          <End Role="Designations" Type="Self.Designations" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Designations">
+              <PropertyRef Name="DesignationID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="DesignationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="Usp_Login" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserName" Type="varchar" Mode="In" />
+          <Parameter Name="Password" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="CompanyPrintersModelStoreContainer">
+          <EntitySet Name="Designations" EntityType="Self.Designations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Employeemaster" EntityType="Self.Employeemaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PrinterMakeTbl" EntityType="Self.PrinterMakeTbl" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Printers" EntityType="Self.Printers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Documents__Engen__67DE6983" Association="Self.FK__Documents__Engen__67DE6983">
+            <End Role="Printers" EntitySet="Printers" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Printers__Printe__68D28DBC" Association="Self.FK__Printers__Printe__68D28DBC">
+            <End Role="PrinterMakeTbl" EntitySet="PrinterMakeTbl" />
+            <End Role="Printers" EntitySet="Printers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__Designati__69C6B1F5" Association="Self.FK__Users__Designati__69C6B1F5">
+            <End Role="Designations" EntitySet="Designations" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CompanyPrintersModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Designation">
+          <Key>
+            <PropertyRef Name="DesignationID" />
+          </Key>
+          <Property Name="DesignationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DesignationName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="Self.FK__Users__Designati__69C6B1F5" FromRole="Designations" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="DocID" />
+          </Key>
+          <Property Name="DocID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DocType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DocUrl" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="EngenPrintersID" Type="Int32" />
+          <NavigationProperty Name="Printer" Relationship="Self.FK__Documents__Engen__67DE6983" FromRole="Documents" ToRole="Printers" />
+        </EntityType>
+        <EntityType Name="Employeemaster">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LoginName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ContactNo" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsApporved" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="TotalCnt" Type="Int32" />
+        </EntityType>
+        <EntityType Name="PrinterMakeTbl">
+          <Key>
+            <PropertyRef Name="PrinterMakeID" />
+          </Key>
+          <Property Name="PrinterMakeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PrinterMake" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Printers" Relationship="Self.FK__Printers__Printe__68D28DBC" FromRole="PrinterMakeTbl" ToRole="Printers" />
+        </EntityType>
+        <EntityType Name="Printer">
+          <Key>
+            <PropertyRef Name="EngenPrintersID" />
+          </Key>
+          <Property Name="EngenPrintersID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PrinterName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PrinterMakeID" Type="Int32" Nullable="false" />
+          <Property Name="FolderToMonitor" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="OutputType" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FileOutput" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="CreateTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Documents" Relationship="Self.FK__Documents__Engen__67DE6983" FromRole="Printers" ToRole="Documents" />
+          <NavigationProperty Name="PrinterMakeTbl" Relationship="Self.FK__Printers__Printe__68D28DBC" FromRole="Printers" ToRole="PrinterMakeTbl" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DOB" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DesignationID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Designation" Relationship="Self.FK__Users__Designati__69C6B1F5" FromRole="Users" ToRole="Designations" />
+        </EntityType>
+        <Association Name="FK__Users__Designati__69C6B1F5">
+          <End Role="Designations" Type="Self.Designation" Multiplicity="1" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Designations">
+              <PropertyRef Name="DesignationID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="DesignationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Documents__Engen__67DE6983">
+          <End Role="Printers" Type="Self.Printer" Multiplicity="0..1" />
+          <End Role="Documents" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Printers">
+              <PropertyRef Name="EngenPrintersID" />
+            </Principal>
+            <Dependent Role="Documents">
+              <PropertyRef Name="EngenPrintersID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Printers__Printe__68D28DBC">
+          <End Role="PrinterMakeTbl" Type="Self.PrinterMakeTbl" Multiplicity="1" />
+          <End Role="Printers" Type="Self.Printer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PrinterMakeTbl">
+              <PropertyRef Name="PrinterMakeID" />
+            </Principal>
+            <Dependent Role="Printers">
+              <PropertyRef Name="PrinterMakeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CompanyPrintersEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Designations" EntityType="Self.Designation" />
+          <EntitySet Name="Documents" EntityType="Self.Document" />
+          <EntitySet Name="Employeemasters" EntityType="Self.Employeemaster" />
+          <EntitySet Name="PrinterMakeTbls" EntityType="Self.PrinterMakeTbl" />
+          <EntitySet Name="Printers" EntityType="Self.Printer" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK__Users__Designati__69C6B1F5" Association="Self.FK__Users__Designati__69C6B1F5">
+            <End Role="Designations" EntitySet="Designations" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Documents__Engen__67DE6983" Association="Self.FK__Documents__Engen__67DE6983">
+            <End Role="Printers" EntitySet="Printers" />
+            <End Role="Documents" EntitySet="Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Printers__Printe__68D28DBC" Association="Self.FK__Printers__Printe__68D28DBC">
+            <End Role="PrinterMakeTbl" EntitySet="PrinterMakeTbls" />
+            <End Role="Printers" EntitySet="Printers" />
+          </AssociationSet>
+          <FunctionImport Name="Usp_Login" ReturnType="Collection(CompanyPrintersModel.Usp_Login_Result)">
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="Usp_Login_Result">
+          <Property Type="Int32" Name="UserId" Nullable="false" />
+          <Property Type="String" Name="UserName" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="LoginName" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="Password" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="Email" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="ContactNo" Nullable="false" MaxLength="1" />
+          <Property Type="String" Name="Address" Nullable="false" MaxLength="1" />
+          <Property Type="Int32" Name="IsApporved" Nullable="false" />
+          <Property Type="Int32" Name="Status" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CompanyPrintersModelStoreContainer" CdmEntityContainer="CompanyPrintersEntities">
+          <EntitySetMapping Name="Designations">
+            <EntityTypeMapping TypeName="CompanyPrintersModel.Designation">
+              <MappingFragment StoreEntitySet="Designations">
+                <ScalarProperty Name="DesignationID" ColumnName="DesignationID" />
+                <ScalarProperty Name="DesignationName" ColumnName="DesignationName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="CompanyPrintersModel.Document">
+              <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="DocID" ColumnName="DocID" />
+                <ScalarProperty Name="DocName" ColumnName="DocName" />
+                <ScalarProperty Name="DocType" ColumnName="DocType" />
+                <ScalarProperty Name="DocUrl" ColumnName="DocUrl" />
+                <ScalarProperty Name="EngenPrintersID" ColumnName="EngenPrintersID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employeemasters">
+            <EntityTypeMapping TypeName="CompanyPrintersModel.Employeemaster">
+              <MappingFragment StoreEntitySet="Employeemaster">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="IsApporved" ColumnName="IsApporved" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TotalCnt" ColumnName="TotalCnt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PrinterMakeTbls">
+            <EntityTypeMapping TypeName="CompanyPrintersModel.PrinterMakeTbl">
+              <MappingFragment StoreEntitySet="PrinterMakeTbl">
+                <ScalarProperty Name="PrinterMakeID" ColumnName="PrinterMakeID" />
+                <ScalarProperty Name="PrinterMake" ColumnName="PrinterMake" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Printers">
+            <EntityTypeMapping TypeName="CompanyPrintersModel.Printer">
+              <MappingFragment StoreEntitySet="Printers">
+                <ScalarProperty Name="EngenPrintersID" ColumnName="EngenPrintersID" />
+                <ScalarProperty Name="PrinterName" ColumnName="PrinterName" />
+                <ScalarProperty Name="PrinterMakeID" ColumnName="PrinterMakeID" />
+                <ScalarProperty Name="FolderToMonitor" ColumnName="FolderToMonitor" />
+                <ScalarProperty Name="OutputType" ColumnName="OutputType" />
+                <ScalarProperty Name="FileOutput" ColumnName="FileOutput" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="CreateTimestamp" ColumnName="CreateTimestamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="CompanyPrintersModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="DesignationID" ColumnName="DesignationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="Usp_Login" FunctionName="CompanyPrintersModel.Store.Usp_Login">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CompanyPrintersModel.Usp_Login_Result">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="IsApporved" ColumnName="IsApporved" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
